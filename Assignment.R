@@ -197,5 +197,104 @@ summary(assg_data)
 
 
 
+####################### To analyse if not having a personal vehicle will affect the student's attendance at classes  ###########################
+
+#import library
+library(dplyr)
+
+# number of students and attendance
+nrow(assg_data[assg_data$Att_Class =="Always",]) #1153
+nrow(assg_data[assg_data$Att_Class =="Sometimes",]) #381
+nrow(assg_data[assg_data$Att_Class =="Never",]) #0
+
+# number of students and transportation 
+nrow(assg_data[assg_data$StuTransport =="Bus",]) #1030
+nrow(assg_data[assg_data$StuTransport =="Private car/taxi",]) #270
+nrow(assg_data[assg_data$StuTransport =="Other",]) #224
+nrow(assg_data[assg_data$StuTransport =="Bicycle",]) #10
+
+
+# Public transport (BUS,ALWAYS)
+# Hypothesis: Students that does not have personal vehicle -> low attendance
+# Analysis: Students that does not have personal vehicle -> high attendance
+# contradicting our hypothesis -> taking public transport will not have low attendance
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Always") ,]) #759
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Never") ,]) #0
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") ,]) #271
+
+# Additional activity (BUS,ALWAYS,NO)
+# Hypothesis: Students that participate in activity regularly -> low attendance
+# Analysis: Students that participate in activity regularly -> low attendance
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Always") &(assg_data$Art_Sport =="Yes"),]) #277
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Always") &(assg_data$Art_Sport =="No"),])  #482
+
+# Active partner (BUS,ALWAYS,NO,NO)
+#Hypothesis: Students that have active partner -> low attendance
+#Analysis: Students that have active partner -> low attendance
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Always") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="Yes"),]) #239
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Always") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="No"),]) #243
+
+# Additional work (BUS,ALWAYS,NO,NO,NO)
+#Hypothesis: Students that have additional work -> low attendance
+#Analysis: Students that have additional work -> low attendance
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Always") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="Yes") &(assg_data$Add_Work =="Yes"),]) #79
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Always") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="No") &(assg_data$Add_Work =="No"),]) #174
+
+# Analyse will transport affect students' attendance 
+#Always: 1. Bus-759   2. Private car-205   3. Other-179   4. Bicycle-10  -> does not have private car will not have low attendance
+
+# BUS
+# Analysis: Students who take bus to classes
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Always") ,]) #759
+
+# BUS + Always + No_Activity + Yes_Partner + Yes_Work
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Always") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="Yes") &(assg_data$Add_Work =="Yes"),]) #79
+# BUS + Always + No_Activity + No_Partner + No_Work
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Always") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="No") &(assg_data$Add_Work =="No"),]) #174
+
+# PRIVATE CAR/TAXI
+# Analysis: Students who take private car/taxi to classes
+nrow(assg_data[(assg_data$StuTransport =="Private car/taxi") &(assg_data$Att_Class =="Always") ,]) #205
+
+# PRIVATE CAR/TAXI + Always + No_Activity + Yes_Partner + Yes_Work
+nrow(assg_data[(assg_data$StuTransport =="Private car/taxi") &(assg_data$Att_Class =="Always") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="Yes") &(assg_data$Add_Work =="Yes"),]) #8
+# PRIVATE CAR/TAXI + Always + No_Activity + No_Partner + No_Work
+nrow(assg_data[(assg_data$StuTransport =="Private car/taxi") &(assg_data$Att_Class =="Always") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="No") &(assg_data$Add_Work =="No"),]) #29
+
+# OTHER
+# Analysis: Students who take other transport to classes
+nrow(assg_data[(assg_data$StuTransport =="Other") &(assg_data$Att_Class =="Always") ,]) #179
+
+# OTHER + Always + No_Activity + Yes_Partner + Yes_Work
+nrow(assg_data[(assg_data$StuTransport =="Other") &(assg_data$Att_Class =="Always") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="Yes") &(assg_data$Add_Work =="Yes"),]) #13
+# OTHER + Always + No_Activity + No_Partner + No_Work
+nrow(assg_data[(assg_data$StuTransport =="Other") &(assg_data$Att_Class =="Always") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="No") &(assg_data$Add_Work =="No"),]) #63
+
+# BICYCLE
+# Analysis: Students who take bicycles to classes
+nrow(assg_data[(assg_data$StuTransport =="Bicycle") &(assg_data$Att_Class =="Always") ,]) #10
+
+# BICYCLE + Always + No_Activity + Yes_Partner + Yes_Work
+nrow(assg_data[(assg_data$StuTransport =="Bicycle") &(assg_data$Att_Class =="Always") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="Yes") &(assg_data$Add_Work =="Yes"),]) #3
+# BICYCLE + Always + No_Activity + No_Partner + No_Work
+nrow(assg_data[(assg_data$StuTransport =="Bicycle") &(assg_data$Att_Class =="Always") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="No") &(assg_data$Add_Work =="No"),]) #0
+
+
+
+
+
+
 
 
