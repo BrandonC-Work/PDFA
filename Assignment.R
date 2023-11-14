@@ -306,63 +306,42 @@ nrow(assg_data[assg_data$Add_Work =="Yes",]) #533
 nrow(assg_data[assg_data$Add_Work =="No",]) #1001
 
 #---------------------------------------------------------------------------------------------------
-
-# Additional Work (No,ALWAYS)
-# Hypothesis: Students that have additional work -> low attendance
-
+# Final Analysis
+#----------------
 # Analysis: Students that have additional work -> low attendance
-nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Always") ,]) #411
-nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Never") ,]) #0
-nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Sometimes") ,]) #122
-# Analysis: Students that does not have additional work -> high attendance
-nrow(assg_data[(assg_data$Add_Work =="No") &(assg_data$Att_Class =="Always") ,]) #742
-nrow(assg_data[(assg_data$Add_Work =="No") &(assg_data$Att_Class =="Never") ,]) #0
-nrow(assg_data[(assg_data$Add_Work =="No") &(assg_data$Att_Class =="Sometimes") ,]) #259
+nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Always") ,]) #411 out of 533
+nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Never") ,]) #0 out of 533
+nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Sometimes") ,]) #122 out of 533
 
-
+# Conclusion: Those who have additional work, majority always attends classes. Hypo = False.
 #---------------------------------------------------------------------------------------------------
-
-# Transport (No,ALWAYS,Bus)
-# Hypothesis: Students that uses public transport -> low attendance
 # Analysis: Students that uses public transport -> low attendance
-nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Always") &(assg_data$StuTransport =="Bus"),]) #253
-nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Always") &(assg_data$StuTransport =="Private car/taxi"),]) #110
-nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Always") &(assg_data$StuTransport =="Bicycle"),]) #10
-nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Always") &(assg_data$StuTransport =="Other"),]) #38
+nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Sometimes") &(assg_data$StuTransport =="Bus"),]) #99 out of 122
+nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Sometimes") &(assg_data$StuTransport =="Private car/taxi"),]) #23 out of 122
+nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Sometimes") &(assg_data$StuTransport =="Bicycle"),]) #0 out of 122
+nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Sometimes") &(assg_data$StuTransport =="Other"),]) #0 out of 122
 
-nrow(assg_data[(assg_data$Add_Work =="No") &(assg_data$Att_Class =="Always") &(assg_data$StuTransport =="Bus"),]) #506
-nrow(assg_data[(assg_data$Add_Work =="No") &(assg_data$Att_Class =="Always") &(assg_data$StuTransport =="Private car/taxi"),]) #95
-nrow(assg_data[(assg_data$Add_Work =="No") &(assg_data$Att_Class =="Always") &(assg_data$StuTransport =="Bicycle"),]) #0
-nrow(assg_data[(assg_data$Add_Work =="No") &(assg_data$Att_Class =="Always") &(assg_data$StuTransport =="Other"),]) #141
-
+# Conclusion: Those who have additional work and sometimes attend classes. Majority use public transport (BUS). Hypo = True
 #---------------------------------------------------------------------------------------------------
-
-# Active partner (No,Always,Bus,No)
-#Hypothesis: Students that have active partner -> low attendance
 #Analysis: Students that have active partner -> low attendance
-nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Always") &(assg_data$StuTransport =="Bus")
-               &(assg_data$StuPartner =="Yes"),]) #130
+nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Sometimes") &(assg_data$StuTransport =="Bus")
+               &(assg_data$StuPartner =="Yes"),]) #30 out of 99
+nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Sometimes") &(assg_data$StuTransport =="Bus")
+               &(assg_data$StuPartner =="No"),]) #69 out of 99
 
-nrow(assg_data[(assg_data$Add_Work =="No") &(assg_data$Att_Class =="Always") &(assg_data$StuTransport =="Bus")
-               &(assg_data$StuPartner =="No"),]) #270
-
+# Conclusion: Those who have additional work, sometimes attend classes, and uses public transport. Majority are single. Hypo = False
 #---------------------------------------------------------------------------------------------------
-
-# Regular Artistic or Sport activity (No,ALWAYS,Bus,NO,NO)
-#Hypothesis: Students that participate in art or sport -> low attendance
 #Analysis: Students that have additional work -> low attendance
-nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Always") &(assg_data$StuTransport =="Bus")
-               &(assg_data$StuPartner =="No")&(assg_data$Art_Sport =="Yes"),]) #54
+nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Sometimes") &(assg_data$StuTransport =="Bus")
+               &(assg_data$StuPartner =="Yes")&(assg_data$Art_Sport =="Yes"),]) #12 out of 30
+nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Sometimes") &(assg_data$StuTransport =="Bus")
+               &(assg_data$StuPartner =="Yes")&(assg_data$Art_Sport =="No"),]) #18 out of 30
 
-nrow(assg_data[(assg_data$Add_Work =="Yes") &(assg_data$Att_Class =="Always") &(assg_data$StuTransport =="Bus")
-               &(assg_data$StuPartner =="No")&(assg_data$Art_Sport =="No"),]) #69
-#Analysis: Students that have additional work -> low attendance
-nrow(assg_data[(assg_data$Add_Work =="No") &(assg_data$Att_Class =="Always") &(assg_data$StuTransport =="Bus")
-               &(assg_data$StuPartner =="No")&(assg_data$Art_Sport =="Yes"),]) #96
-
-nrow(assg_data[(assg_data$Add_Work =="No") &(assg_data$Att_Class =="Always") &(assg_data$StuTransport =="Bus")
-               &(assg_data$StuPartner =="No")&(assg_data$Art_Sport =="No"),]) #174
-
+# Conclusion: Those who have additional work, sometimes attend classes, use public transport and, they are not single. 
+# Majority do not attend sports or art activities. Hypo = False.
+#---------------------------------------------------------------------------------------------------
+# Final Conclusion: Those who have additional work, use public transport, are in a relationship and attends sports/arts activities. 
+## Does not result in low attendance. Hypothesis is wrong.
 #---------------------------------------------------------------------------------------------------
 
 
