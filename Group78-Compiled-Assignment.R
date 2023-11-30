@@ -1,6 +1,6 @@
 #-------------Install and load packages--------------------
 #define packages to install
-packageNames <- c('ggplot2', 'dplyr', 'lattice', 'treemapify')
+packageNames <- c('ggplot2', 'dplyr', 'lattice', 'treemapify','plotly')
 #------------------------------------------------
 is_installed <- function(pkg){
   return(require(pkg, character.only = TRUE))
