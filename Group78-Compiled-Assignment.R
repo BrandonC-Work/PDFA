@@ -793,7 +793,305 @@ print(fisher_test_result)
 
 ####################### To analyse if using public transport will affect the student's attendance to classes  ###########################
 # Objective 4 Analysis - Ong JingQing TP063906
+##### Find out which type of vehicle have more ppl have low attendance 
+#Conclusion: Bus
 
+#Low Attendance
+# BUS
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") ,]) #271
+# PRIVATE CAR/TAXI
+nrow(assg_data[(assg_data$StuTransport =="Private car/taxi") &(assg_data$Att_Class =="Sometimes") ,]) #65
+# OTHER
+nrow(assg_data[(assg_data$StuTransport =="Other") &(assg_data$Att_Class =="Sometimes") ,]) #45
+# BICYCLE
+nrow(assg_data[(assg_data$StuTransport =="Bicycle") &(assg_data$Att_Class =="Sometimes") ,]) #0
+
+#To view students with low attendance in table
+transport_table <- table(assg_data$StuTransport[assg_data$Att_Class == "Sometimes"])
+print(transport_table)
+
+#High Attendance
+# BUS
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Always") ,]) #759
+# PRIVATE CAR/TAXI
+nrow(assg_data[(assg_data$StuTransport =="Private car/taxi") &(assg_data$Att_Class =="Always") ,]) #205
+# OTHER
+nrow(assg_data[(assg_data$StuTransport =="Other") &(assg_data$Att_Class =="Always") ,]) #179
+# BICYCLE
+nrow(assg_data[(assg_data$StuTransport =="Bicycle") &(assg_data$Att_Class =="Always") ,]) #10
+
+#To view students with High attendance in table
+transport_table <- table(assg_data$StuTransport[assg_data$Att_Class == "Always"])
+print(transport_table)
+
+
+
+#Plot low attendance and transport (bar chart)
+bus_count <- nrow(assg_data[(assg_data$StuTransport == "Bus") & (assg_data$Att_Class == "Sometimes"),])
+car_taxi_count <- nrow(assg_data[(assg_data$StuTransport == "Private car/taxi") & (assg_data$Att_Class == "Sometimes"),])
+other_count <- nrow(assg_data[(assg_data$StuTransport == "Other") & (assg_data$Att_Class == "Sometimes"),])
+bicycle_count <- nrow(assg_data[(assg_data$StuTransport == "Bicycle") & (assg_data$Att_Class == "Sometimes"),])
+
+chart_data <- data.frame(
+  StuTransport = c("Bus", "Private car/taxi", "Other", "Bicycle"),
+  Count = c(bus_count, car_taxi_count, other_count, bicycle_count)
+)
+
+ggplot(chart_data, aes(x = StuTransport, y = Count, fill = StuTransport)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_text(aes(label = Count), vjust = -0.5, size = 4, color = "black") + 
+  labs(title = "Transportation Distribution for Low Attendance", x = "Transportation Types", y = "Class Attendance") +
+  scale_fill_manual(values = c("Bus" = "purple", "Private car/taxi" = "#D01CBB", "Other" = "lightpink", "Bicycle" = "red")) +
+  theme_minimal()
+
+
+#Plot low attendance and transport (tree map)
+custom_colors <- c("lightgreen", "skyblue", "coral", "lightpink")
+
+percentages <- round(100 * chart_data$Count / sum(chart_data$Count), 1)
+
+chart_data$Percentage <- paste0(percentages, "%")
+
+ggplot(chart_data, aes(area = Count, fill = StuTransport, label = paste(StuTransport, "\n", Percentage))) +
+  geom_treemap(color = "white") + 
+  geom_treemap_text(size = 30, color = "black", place = "centre", grow = FALSE) + 
+  scale_fill_manual(values = custom_colors) +  
+  theme(legend.position = "bottom") +
+  labs(title = "Student with low attendance transport distribution")
+
+
+#Plot low attendance and transport that are more than 50 (bar chart)
+chart_data$Color <- ifelse(chart_data$Count > 50, "green", "red") 
+
+ggplot(chart_data, aes(x = StuTransport, y = Count, fill = Color)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_text(aes(label = Count), vjust = -0.5, size = 4, color = "black") +
+  labs(title = "Transportation Distribution for Low Attendance", x = "Transportation Types", y = "Class Attendance") +
+  scale_fill_identity() +  # Use identity scale for custom colors
+  theme_minimal()
+
+
+#Plot high attendance and transport (bar chart)
+bus <- nrow(assg_data[(assg_data$StuTransport == "Bus") & (assg_data$Att_Class == "Always"),])
+car_taxi <- nrow(assg_data[(assg_data$StuTransport == "Private car/taxi") & (assg_data$Att_Class == "Always"),])
+other <- nrow(assg_data[(assg_data$StuTransport == "Other") & (assg_data$Att_Class == "Always"),])
+bicycle <- nrow(assg_data[(assg_data$StuTransport == "Bicycle") & (assg_data$Att_Class == "Always"),])
+
+chart_data_always <- data.frame(
+  StuTransport = c("Bus", "Private car/taxi", "Other", "Bicycle"),
+  Count = c(bus, car_taxi, other, bicycle)
+)
+
+ggplot(chart_data, aes(x = StuTransport, y = Count, fill = StuTransport)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_text(aes(label = Count), vjust = -0.5, size = 4, color = "black") +  # Add this line for labels
+  labs(title = "Transportation Distribution for High Attendance", x = "Transportation Types", y = "Class Attendance") +
+  scale_fill_manual(values = c("Bus" = "lightblue", "Private car/taxi" = "pink", "Other" = "coral", "Bicycle" = "yellow")) +
+  theme_minimal()
+
+
+
+
+### +Additional activity 
+### Analysis: Students that do not have activity regularly have more people that have low attendance (contradict)
+yes_sport <- nrow(assg_data[(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="Yes"),]) #96
+no_sport <- nrow(assg_data[(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="No"),])  #175
+
+art_sport_table <- table(assg_data$Art_Sport[assg_data$StuTransport == "Bus" & assg_data$Att_Class == "Sometimes"])
+print(art_sport_table)
+
+
+# Plot bus, low attendance + art_sport (bar chart)
+bus_yesArt_count <- nrow(assg_data[(assg_data$StuTransport == "Bus") & (assg_data$Att_Class == "Sometimes") & (assg_data$Art_Sport == "Yes"),])
+bus_noArt_count <- nrow(assg_data[(assg_data$StuTransport == "Bus") & (assg_data$Att_Class == "Sometimes") & (assg_data$Art_Sport == "No"),])
+
+stacked_data <- data.frame(
+  Art_Sport = c("Yes", "No"),
+  Regularity = c(bus_yesArt_count, bus_noArt_count)
+)
+
+ggplot(stacked_data, aes(x = Art_Sport, y = Regularity, fill = Art_Sport)) +
+  geom_col(position = "stack") +
+  geom_text(aes(label = Regularity), position = position_stack(vjust = 0.5), color = "black" , size = 5) +  # Add labels
+  labs(title = "Low Attendance Student taking public transport to class and Art_Sport", x = "Art_Sport", y = "Number of Students") +
+  scale_fill_manual(values = c("Yes" = "#c7f9fc", "No" = "lightblue")) +
+  theme_minimal()
+
+
+# Plot bus, low attendance + art_sport (donut)
+Art_Sport = c("Yes", "No")
+Regularity = c(bus_yesArt_count, bus_noArt_count)
+
+plot_ly(labels = ~Art_Sport, values = ~Regularity, type = 'pie', hole = 0.5,
+        textinfo = "label+percent", marker = list(colors = topo.colors(2))) %>%
+  layout(title = "Low Attendance Student taking public transport to class and Art_Sport")
+
+
+
+### +Active partner 
+### Analysis: Students that have active partner have less people that have low attendance (contradict)
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="Yes"),]) #73
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="No"),]) #102
+
+
+# Plot bus, low attendance, yes/no art_spport, yes/no partner (bar chart)
+yesArt_stuPartner_yes <- nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="Yes") 
+                                        &(assg_data$StuPartner =="Yes"),])
+yesArt_stuPartner_no <- nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="Yes") 
+                                       &(assg_data$StuPartner =="No"),])
+yesArt_stuPartner_yes #23
+yesArt_stuPartner_no #73
+
+noArt_stuPartner_yes <- nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="No") 
+                                       &(assg_data$StuPartner =="Yes"),])
+noArt_stuPartner_no <- nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="No") 
+                                      &(assg_data$StuPartner =="No"),])
+noArt_stuPartner_yes #73
+noArt_stuPartner_no #102
+
+# yes/no artSport and yes/no partner
+clustered_data <- data.frame(
+  Art_Sport = factor(rep(c("Yes", "No"), each = 2), levels = c("Yes", "No")),
+  StuPartner = factor(rep(c("Yes", "No"), times = 2), levels = c("Yes", "No")),
+  Count = c(yesArt_stuPartner_yes, yesArt_stuPartner_no, noArt_stuPartner_yes, noArt_stuPartner_no)
+)
+
+raibow <- rainbow(2)
+
+ggplot(clustered_data, aes(x = StuPartner, y = Count, fill = Art_Sport)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = Count), position = position_dodge(width = 0.8), vjust = -0.5, color = "black", size = 4) +
+  labs(title = "Low Attendance Student taking public transport to class with different Art_Sport and StuPartner Status",
+       x = "Partner",
+       y = "Number of Students") +
+  scale_fill_manual(values = raibow , name = "Art_Sport") +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust = 0.5, color = "coral", face = "bold"), 
+        axis.text.y = element_text(size = 10, color = "blue", face = "italic")) +
+  theme(plot.title = element_text(size = 10)) 
+
+
+ 
+# Plot bus, low attendance, no art_spport, yes/no partner (bar chart)
+filtered_data <- clustered_data[clustered_data$Art_Sport == "No", ]
+
+ggplot(filtered_data, aes(x = StuPartner, y = Count, fill = interaction(Art_Sport, StuPartner))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = Count), position = position_dodge(width = 0.8), vjust = -0.5, color = "black", size = 4) +
+  labs(title = "Low Attendance Student taking public transport to class with Art_Sport_No and Different StuPartner Status",
+       x = "Art_Sport & StuPartner",
+       y = "Number of Students") +
+  scale_fill_manual(values = c("No.Yes" = "#0047ab", "No.No" = "#101d68"),
+                    name = "Attributes",
+                    labels = c("Art_Sport_No,Partner_Yes", "Art_Sport_No,Partner_No")) +  # Custom legend labels
+  theme_minimal() +
+  theme(plot.title = element_text(size = 10)) 
+
+
+# Plot bus, low attendance, no art_spport, no partner (bar chart)
+filtered_data <- clustered_data[clustered_data$StuPartner == "No" & clustered_data$Art_Sport == "No", ]
+
+# Create a bar chart for noArt_noPartner
+ggplot(filtered_data, aes(x = StuPartner, y = Count, fill = Art_Sport)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = Count), position = position_dodge(width = 0.8), vjust = -0.5, color = "black", size = 4) +
+  labs(title = "Number of Students Taking Bus Sometimes with Different Art_Sport and StuPartner Status",
+       x = "Partner",
+       y = "Number of Students") +
+  scale_fill_manual(values = "lightpink", name = "Art_Sport") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust = 0.5, color = "coral", face = "bold"),
+        axis.text.y = element_text(size = 10, color = "magenta", face = "italic")) +
+  theme(plot.title = element_text(size = 10, color = gradient_palette(100)[10] , face = "bold", hjust = 0.5, vjust = 2))
+
+
+
+### +Additional work
+### Analysis: Students that have additional work have less people that have low attendance (contradict)
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="No") &(assg_data$Add_Work =="Yes"),]) #30
+nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="No") 
+               &(assg_data$StuPartner =="No") &(assg_data$Add_Work =="No"),]) #72
+
+# To check see every possibility 
+noArt_yesPartner_Work_yes <- nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="No") 
+                                            &(assg_data$StuPartner =="Yes") &(assg_data$Add_Work =="Yes"),]) #18
+noArt_yesPartner_Work_no <- nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="No") 
+                                           &(assg_data$StuPartner =="Yes") &(assg_data$Add_Work =="No"),]) #55
+
+yesArt_yesPartner_Work_yes <- nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="Yes") 
+                                             &(assg_data$StuPartner =="Yes") &(assg_data$Add_Work =="Yes"),]) #12
+yesArt_yesPartner_Work_no <- nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="Yes") 
+                                            &(assg_data$StuPartner =="Yes") &(assg_data$Add_Work =="No"),]) #11
+
+
+noArt_noPartner_Work_yes <- nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="No") 
+                                           &(assg_data$StuPartner =="No") &(assg_data$Add_Work =="Yes"),]) #30
+noArt_noPartner_Work_no <- nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="No") 
+                                          &(assg_data$StuPartner =="No") &(assg_data$Add_Work =="No"),]) #72
+
+yesArt_noPartner_Work_yes <- nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="Yes") 
+                                            &(assg_data$StuPartner =="No") &(assg_data$Add_Work =="Yes"),]) #39
+yesArt_noPartner_Work_no <- nrow(assg_data[(assg_data$StuTransport =="Bus") &(assg_data$Att_Class =="Sometimes") &(assg_data$Art_Sport =="Yes") 
+                                           &(assg_data$StuPartner =="No") &(assg_data$Add_Work =="No"),]) #34
+
+
+# Plot low attendance, bus, yes/no work, yes/no art_sport, yes/no partner
+filtered_data <- subset(assg_data, StuTransport == "Bus" & Att_Class == "Sometimes")
+
+ggplot(filtered_data, aes(x = Add_Work, fill = Att_Class)) +
+  geom_bar(position = "dodge", color = "black", stat = "count") +
+  geom_text(stat = "count", aes(label = ..count..),
+            position = position_dodge(width = 0.9), vjust = -0.5, size = 4, color = "black") +
+  facet_grid(StuTransport ~ StuPartner + Art_Sport) +
+  labs(title = "Low attendance students who take public transport to class, \n and relationship between partner, activity, and job status",
+       x = "Additional Work",
+       y = "Number of students",
+       fill = "Attendance") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 15, color = "maroon" , face = "bold", hjust = 0.5, vjust = 2))
+
+
+
+# Plot low attendance, bus, yes/no add_work, no art_sport, no partner
+filtered_data <- subset(assg_data, Att_Class %in% c("Sometimes") &
+                          StuTransport %in% c("Bus") &
+                          Art_Sport %in% c("No") &
+                          StuPartner %in% c("No") &
+                          Add_Work %in% c("Yes", "No"))
+
+Count <- filtered_data %>%
+  group_by(StuTransport, Art_Sport, StuPartner, Add_Work) %>%
+  summarise(count = n(), .groups = "drop")
+
+Count$percentage <- Count$count / sum(Count$count)
+
+cm_colors <- cm.colors(2)
+gradient_palette <- colorRampPalette(c("blue", "red"))
+ggplot(Count, aes(x = StuPartner, y = count, fill = Add_Work)) +
+  geom_bar(position = "Stack", stat = "identity", color = "black", linewidth = 0.3) +
+  geom_text(aes(label = paste0(count, "(", scales::percent(percentage), ")")),
+            position = position_stack(vjust = 0.5)) +
+  facet_wrap(~ StuTransport) +
+  labs(
+    title = "Low Attendance Student taking public transport to class with 
+    No Art_Sport and StuPartner Status but Add_Work",
+    x = "Art_Sport & StuPartner",
+    y = "Student Attendance"
+  ) +
+  scale_fill_manual(values = cm_colors) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 10, color = gradient_palette(100)[50] , face = "bold", hjust = 0.5, vjust = 2))
+
+
+
+### Testing for attendance and transport
+testing_table <- table(assg_data$StuTransport,assg_data$Att_Class)
+testing_result <- fisher.test(testing_table)
+testing_result
+#-------------------------------------------------------------------------------------------------------------------------
 
 
 
